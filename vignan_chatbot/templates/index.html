@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gemini AI Chatbot</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <h1>MochaMind</h1>
+
+  <div id="chat-container">
+    <div id="chat-box"></div>
+
+    <div id="input-box">
+      <input type="text" id="user-input" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <div id="tools">
+      <button id="clear-btn" onclick="clearChat()">Clear Chat</button>
+      <button id="toggle-theme" onclick="toggleTheme()">Toggle Theme</button>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const userInput = document.getElementById("user-input");
+    let darkMode = false;
+
+    function sendMessage() {
+      const message = userInput.value.trim();
+      if (message === "") return;
+
+      appendMessage("You", message, "user");
+      userInput.value = "";
+
+      setTimeout(() => {
+        showTyping();
+        setTimeout(() => {
+          removeTyping();
+          const botReply = getBotReply(message);
+          appendMessage("Bot", botReply, "bot");
+        }, 1000);
+      }, 500);
+    }
+
+    function getBotReply(input) {
+      if (input.toLowerCase().includes("hello") || input.toLowerCase().includes("hi")) {
+        return "Hi there! How can I assist you today?";
+      }
+      return "I'm still learning! Try asking something simple.";
+    }
+
+    function appendMessage(sender, text, className) {
+      const message = document.createElement("p");
+      message.innerHTML = `<span class="${className}">${sender}:</span> ${text}`;
+      chatBox.appendChild(message);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function showTyping() {
+      const typing = document.createElement("p");
+      typing.id = "typing";
+      typing.innerHTML = `<span class="bot">Bot:</span> <i>typing...</i>`;
+      chatBox.appendChild(typing);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function removeTyping() {
+      const typing = document.getElementById("typing");
+      if (typing) typing.remove();
+    }
+
+    function clearChat() {
+      chatBox.innerHTML = "";
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark-mode");
+      darkMode = !darkMode;
+    }
+
+    userInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
